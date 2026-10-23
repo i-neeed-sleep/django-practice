@@ -5,7 +5,8 @@ class Question(models.Model):
     question = models.CharField(max_length=200)
     answer = models.CharField(max_length=200, blank=True)
     choices = models.JSONField(blank=True)
+    quiz = models.ManyToManyField('quiz.Quiz', related_name='question_instances', blank=True)
 
 class QuestionInstance(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='question_instances')
-    quiz = models.ManyToManyField('quiz.Quiz', related_name='question_instances')
+    quiz_instance = models.ManyToManyField('quiz.QuizInstance', on_delete=models.CASCADE, related_name='question_instances')
