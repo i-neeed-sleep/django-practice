@@ -12,3 +12,4 @@ class QuestionInstance(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='question_instances')
     quiz_instance = models.ForeignKey('quiz.QuizInstance', related_name='question_instances', on_delete=models.CASCADE)
     response = models.CharField(max_length=200, blank=True)
+    submitted = models. BooleanField(default = False)

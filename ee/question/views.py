@@ -1,6 +1,6 @@
 from rest_framework import status, viewsets
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from .models import Question, QuestionInstance
 from .serializers import QuestionSerializer
@@ -8,6 +8,8 @@ from .serializers import QuestionSerializer
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
+
+    permission_classes = [IsAuthenticated]    
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -26,6 +28,8 @@ class QuestionViewSet(viewsets.ModelViewSet):
 class QuestionInstanceViewSet(viewsets.ModelViewSet):
     queryset = QuestionInstance.objects.all()
     serializer_class = QuestionSerializer
+
+    permission_classes = [AllowAny]
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
