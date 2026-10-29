@@ -10,12 +10,6 @@ class QuizViewSet(viewsets.ModelViewSet):
     queryset = Quiz.objects.all()
     serializer_class = QuizSerializer
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        quiz = serializer.save(teacher=request.user)
-        return Response(QuizSerializer(quiz).data, status=status.HTTP_201_CREATED)
-
     def update(self, request, *args, **kwargs):
         quiz = self.get_object()
         if new_questions := request.data.get("questions"):
@@ -48,11 +42,6 @@ class QuizViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         quiz = serializer.save()
         return Response(QuizSerializer(quiz).data, status=status.HTTP_200_OK)
-
-    def destroy(self, request, *args, **kwargs):
-        quiz = self.get_object()
-        self.perform_destroy(quiz)
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class QuizInstanceViewSet(viewsets.ModelViewSet):
     queryset = QuizInstance.objects.all()

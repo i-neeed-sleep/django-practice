@@ -4,25 +4,20 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from .models import Question, QuestionInstance
 from .serializers import QuestionSerializer
+from user.permissions import IsAdmin, IsTeacher
 
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
 
-    permission_classes = [IsAuthenticated]    
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        question = serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)   
-
-    def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if instance.quiz.exists():
-            return Response({"error": "Cannot delete question with associated question instances."}, status=status.HTTP_400_BAD_REQUEST)
-        self.perform_destroy(instance)
-        return Response(status=status.HTTP_204_NO_CONTENT)
+    def get_permissions(self):
+        if self.action == 'destroy':
+            permission_classes = [IsAdmin]
+        elif self.action == 'update':
+            permission_classes = [IsAdmin | IsTeacher]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
 
 
 class QuestionInstanceViewSet(viewsets.ModelViewSet):
